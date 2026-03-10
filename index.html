@@ -1,233 +1,264 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#6366f1">
-  <meta name="description" content="Free two mortgage calculator. Compare overpayments, redirect payments after payoff, and see how to become mortgage-free faster.">
+  <meta name="description" content="Free multiple mortgage calculator. Compare overpayments, redirect payments after payoff, and see how to become mortgage-free faster.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://multiplemortgages.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://multiplemortgages.com/">
+  <meta property="og:title" content="Multiple Mortgage Payoff Calculator">
+  <meta property="og:description" content="See how paying off multiple mortgages faster could save interest using overpayments and payment redirection.">
   <link rel="icon" type="image/png" href="favicon-32x32.png">
-
-  <!--
-    Title shown in the browser tab.
-    
-  -->
-  <title>Two Mortgage Calculator – Compare Overpayments & Pay Off Loans Faster | Cascade</title>
-
-  <!--
-  Main stylesheet.
-  Controls layout, spacing, typography and visual styling.
-  Removing this affects presentation only, not calculation logic.
-  -->
+  <title>Multiple Mortgage Calculator – Model paying off multiple mortgages</title>
   <link rel="stylesheet" href="style.css">
 
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3EG4LHRE7G"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3EG4LHRE7G"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-3EG4LHRE7G');
+  </script>
 
-  gtag('config', 'G-3EG4LHRE7G');
-</script>
-
-  <!--
-  External dependency: Chart.js
-  Provides balance-over-time chart rendering.
-  Must load before chart.js.
-  -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
+  <header class="hero">
+    <div class="hero-toolbar">
+      <div class="toolbar-group">
+        <span class="toolbar-label" id="language-label">Language</span>
+        <div class="segmented-control" aria-label="Language switcher">
+          <button id="lang-en-btn" class="segment-btn active" type="button" onclick="setLanguage('en')">🇬🇧 English</button>
+          <button id="lang-es-btn" class="segment-btn" type="button" onclick="setLanguage('es')">🇪🇸 Español</button>
+        </div>
+      </div>
 
-<header class="hero">
-  <h1 class="hero-title">
-  Calculator for paying off two mortgages
-</h1>
+      <div class="toolbar-group">
+        <label class="toolbar-label" for="currency-select" id="currency-label">Currency</label>
+        <select id="currency-select" class="toolbar-select">
+          <option value="GBP">GBP (£)</option>
+          <option value="USD">USD ($)</option>
+          <option value="EUR">EUR (€)</option>
+        </select>
+      </div>
 
-<div class="hero-explainer">
-  <p>
-    See whether pooling overpayments saves you time and interest.
-  </p>
-</div>
-
-<div class="hero-points">
-  <h3>Cascade may help if you:</h3>
-  <ul>
-    <li>🏠 Own more than one property</li>
-    <li>🤝 Combine finances with a partner</li>
-    <li>📈 Are planning to buy or refinance</li>
-  </ul>
-</div>
-
-<p style="opacity:0.7; margin-top:18px;">
-  The highest-interest mortgage is paid first.
-  When one mortgage is cleared, its payments are redirected to the remaining balance.
-</p>
-  </div>
-</header>
-
-<!--
-  Container holds the two mortgage input cards side-by-side.
--->
-<div class="container">
-
-  <!-- ============================= -->
-  <!-- Mortgage 1 Input Card -->
-  <!-- ============================= -->
-  <div class="card">
-
-    <h2>Mortgage 1</h2>
-
-    <label>Label (Optional)</label>
-    <input id="m1-name" type="text" placeholder="Mortgage 1">
-
-    <label>Balance (£)</label>
-    <input id="m1-balance" type="text" inputmode="decimal">
-    <div id="m1-balance-error" class="error-message"></div>
-
-    <label>Interest Rate (%)</label>
-    <input id="m1-rate" type="text" inputmode="decimal">
-    <div id="m1-rate-error" class="error-message"></div>
-
-    <label>Years</label>
-    <input id="m1-years" type="text" inputmode="numeric">
-    <div id="m1-years-error" class="error-message"></div>
-
-    <label>Months</label>
-    <input id="m1-months" type="text" inputmode="numeric">
-    <div id="m1-months-error" class="error-message"></div>
-
-    <label>Extra money per month (£)</label>
-    <input id="m1-extra" type="text" inputmode="decimal">
-    <div id="m1-extra-error" class="error-message"></div>
-  </div>
-
-  <!-- ============================= -->
-  <!-- Mortgage 2 Input Card -->
-  <!-- ============================= -->
-  <div class="card">
-
-    <h2>Mortgage 2</h2>
-
-    <label>Label (Optional)</label>
-    <input id="m2-name" type="text" placeholder="Mortgage 2">
-
-    <label>Balance (£)</label>
-    <input id="m2-balance" type="text" inputmode="decimal">
-    <div id="m2-balance-error" class="error-message"></div>
-
-    <label>Interest Rate (%)</label>
-    <input id="m2-rate" type="text" inputmode="decimal">
-    <div id="m2-rate-error" class="error-message"></div>
-
-    <label>Years</label>
-    <input id="m2-years" type="text" inputmode="numeric">
-    <div id="m2-years-error" class="error-message"></div>
-
-    <label>Months</label>
-    <input id="m2-months" type="text" inputmode="numeric">
-    <div id="m2-months-error" class="error-message"></div>
-
-    <label>Extra money per month (£)</label>
-    <input id="m2-extra" type="text" inputmode="decimal">
-    <div id="m2-extra-error" class="error-message"></div>
-  </div>
-
-</div>
-
-<!-- ============================= -->
-<!-- Redirect Options -->
-<!-- ============================= -->
-
-<div class="cascade-options">
-
-  <h3>After one mortgage is paid off:</h3>
-
-  <div class="checkbox-row">
-    <input type="checkbox" id="redirect-scheduled" checked>
-    <label for="redirect-scheduled">Redirect its standard payment</label>
-  </div>
-
-  <div class="checkbox-row">
-    <input type="checkbox" id="redirect-extra" checked>
-    <label for="redirect-extra">Redirect its extra payments</label>
-  </div>
-
-</div>
-
-<!--
-  Calculate button triggers calculateFromUI()
-  This function lives in app.js.
--->
-<button id="calculate-btn" onclick="calculateFromUI()">
-   📊 Show Results
-</button>
-
-<!--
-  Results container.
-  app.js replaces its innerHTML dynamically.
--->
-<div id="results"></div>
-
-<!--
-  Script loading order:
-
-  1) engine.js → financial logic
-  2) chart.js  → chart rendering
-  3) app.js    → UI controller
-
-  engine.js must load before chart.js and app.js.
--->
-<script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
-<script src="engine.js"></script>
-<script src="chart.js"></script>
-<script src="app.js"></script>
-
-<footer class="site-footer">
-
-  <details class="footer-toggle">
-    <summary>More about Cascade</summary>
-
-    <div class="footer-section">
-      <strong>🌊 About Cascade</strong>
-      <p>
-        Most mortgage calculators handle a single loan. Cascade models two mortgages (using monthly compounding calculations),
-        applies overpayments to the highest rate first, and compares this to
-        paying off the mortgages separately.
-      </p>
+      <div class="toolbar-group toolbar-links">
+        <a class="guide-link" href="guide.html" id="top-guide-link">See full guide</a>
+        <button class="preset-btn feedback-btn" type="button" onclick="sendFeedback()" id="feedback-btn">Send feedback</button>
+      </div>
     </div>
 
-    <div class="footer-section">
-      <strong>🚫 What’s Not Considered</strong>
-      <ul>
-        <li>Early repayment charges</li>
-        <li>Overpayment limits</li>
-        <li>Tax considerations</li>
-        <li>Rate changes or refinancing</li>
-        <li>Lender-specific rules</li>
-        <li>Comparison with investing extra money instead</li>
-        <li>And so on...</li>
-      </ul>
+    <div class="hero-shell">
+      <h1 class="hero-title" id="hero-title">Calculator for paying off multiple mortgages</h1>
+
+      <div class="hero-points">
+        <h3 id="hero-points-title">May be useful if you:</h3>
+        <ul>
+          <li id="hero-point-1">🏠 Own more than one property</li>
+          <li id="hero-point-2">🤝 Combine finances with a partner</li>
+          <li id="hero-point-3">📈 Are planning to buy or refinance</li>
+        </ul>
+        <p class="hero-note" id="hero-note">
+          <span class="hero-note-label" id="hero-note-label">How it works:</span>
+          <span id="hero-note-copy">The highest-interest mortgage is paid first. When one mortgage is cleared, its payments are redirected to the remaining balance.</span>
+        </p>
+      </div>
+
     </div>
+  </header>
 
-    <div class="footer-section">
-      <strong>⚠️ Results are estimates</strong>
-       <ul>
-      <li>For illustrative purposes only, not guarantees. Always seek professional advice before making significant financial decisions.</li>
-      <li>Nothing is stored, calculations run in browser.</li>
-      <li>Anonymous usage analytics are used to improve the tool.</li>
-      </ul>
-      <a href="https://github.com/dmjfallon/cascade-beta/blob/main/README.md"
-   target="_blank"
-   rel="noopener noreferrer"
-   style="color:#ffffff; text-decoration:underline;">
-   View source code and documentation
-</a>
-    </div>
+  <main>
+    <section class="calculator-shell">
+      <div class="container">
+        <div class="card mortgage-card">
+          <div class="card-head">
+            <h2 id="m1-title">Mortgage 1</h2>
+          </div>
 
-  </details>
+          <label for="m1-name" id="m1-name-label">Label (optional)</label>
+          <input id="m1-name" type="text" placeholder="Mortgage 1">
 
-</footer>
+          <label for="m1-balance" data-label-type="balance">Balance (£)</label>
+          <input id="m1-balance" type="text" inputmode="decimal">
+          <div id="m1-balance-error" class="error-message"></div>
 
+          <label for="m1-rate" id="m1-rate-label">Interest rate (%)</label>
+          <input id="m1-rate" type="text" inputmode="decimal">
+          <div id="m1-rate-error" class="error-message"></div>
+
+          <div class="term-grid">
+            <div>
+              <label for="m1-years" id="m1-years-label">Years</label>
+              <input id="m1-years" type="text" inputmode="numeric">
+              <div id="m1-years-error" class="error-message"></div>
+            </div>
+            <div>
+              <label for="m1-months" id="m1-months-label">Months</label>
+              <input id="m1-months" type="text" inputmode="numeric">
+              <div id="m1-months-error" class="error-message"></div>
+            </div>
+          </div>
+
+          <label for="m1-extra" data-label-type="extra">Extra money per month (£)</label>
+          <input id="m1-extra" type="text" inputmode="decimal">
+          <div id="m1-extra-error" class="error-message"></div>
+        </div>
+
+        <div class="card mortgage-card">
+          <div class="card-head">
+            <h2 id="m2-title">Mortgage 2</h2>
+          </div>
+
+          <label for="m2-name" id="m2-name-label">Label (optional)</label>
+          <input id="m2-name" type="text" placeholder="Mortgage 2">
+
+          <label for="m2-balance" data-label-type="balance">Balance (£)</label>
+          <input id="m2-balance" type="text" inputmode="decimal">
+          <div id="m2-balance-error" class="error-message"></div>
+
+          <label for="m2-rate" id="m2-rate-label">Interest rate (%)</label>
+          <input id="m2-rate" type="text" inputmode="decimal">
+          <div id="m2-rate-error" class="error-message"></div>
+
+          <div class="term-grid">
+            <div>
+              <label for="m2-years" id="m2-years-label">Years</label>
+              <input id="m2-years" type="text" inputmode="numeric">
+              <div id="m2-years-error" class="error-message"></div>
+            </div>
+            <div>
+              <label for="m2-months" id="m2-months-label">Months</label>
+              <input id="m2-months" type="text" inputmode="numeric">
+              <div id="m2-months-error" class="error-message"></div>
+            </div>
+          </div>
+
+          <label for="m2-extra" data-label-type="extra">Extra money per month (£)</label>
+          <input id="m2-extra" type="text" inputmode="decimal">
+          <div id="m2-extra-error" class="error-message"></div>
+        </div>
+
+        <button id="m3-add-card" class="card add-card" type="button" onclick="toggleMortgage3(true)">
+          <span class="add-card-icon">+</span>
+          <span class="add-card-title" id="m3-add-title">Add mortgage 3</span>
+        </button>
+
+        <div class="card mortgage-card optional-card hidden" id="m3-card">
+          <div class="card-head">
+            <div>
+              <span class="card-badge" id="m3-badge">Optional</span>
+              <h2 id="m3-title">Mortgage 3</h2>
+            </div>
+            <button id="m3-remove-btn" class="inline-remove-btn" type="button" onclick="toggleMortgage3(false)">Remove</button>
+          </div>
+
+          <label for="m3-name" id="m3-name-label">Label (optional)</label>
+          <input id="m3-name" type="text" placeholder="Mortgage 3">
+
+          <label for="m3-balance" data-label-type="balance">Balance (£)</label>
+          <input id="m3-balance" type="text" inputmode="decimal">
+          <div id="m3-balance-error" class="error-message"></div>
+
+          <label for="m3-rate" id="m3-rate-label">Interest rate (%)</label>
+          <input id="m3-rate" type="text" inputmode="decimal">
+          <div id="m3-rate-error" class="error-message"></div>
+
+          <div class="term-grid">
+            <div>
+              <label for="m3-years" id="m3-years-label">Years</label>
+              <input id="m3-years" type="text" inputmode="numeric">
+              <div id="m3-years-error" class="error-message"></div>
+            </div>
+            <div>
+              <label for="m3-months" id="m3-months-label">Months</label>
+              <input id="m3-months" type="text" inputmode="numeric">
+              <div id="m3-months-error" class="error-message"></div>
+            </div>
+          </div>
+
+          <label for="m3-extra" data-label-type="extra">Extra money per month (£)</label>
+          <input id="m3-extra" type="text" inputmode="decimal">
+          <div id="m3-extra-error" class="error-message"></div>
+        </div>
+      </div>
+
+      <div class="cascade-options">
+        <div class="options-head">
+          <div>
+            <p class="eyebrow" id="options-eyebrow">Redirect options</p>
+            <h3 id="options-title">After one mortgage is paid off</h3>
+          </div>
+          <p class="options-copy" id="options-copy">
+            When a mortgage finishes, choose whether its usual payment should go towards the remaining debt.
+          </p>
+        </div>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="redirect-scheduled" checked>
+          <label for="redirect-scheduled" id="redirect-scheduled-label">Redirect its standard payment</label>
+        </div>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="redirect-extra" checked>
+          <label for="redirect-extra" id="redirect-extra-label">Redirect its extra payments</label>
+        </div>
+      </div>
+
+      <button id="calculate-btn" onclick="calculateFromUI()">📊 Show results</button>
+      <div id="results"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <details class="footer-toggle">
+      <summary id="footer-summary">More info</summary>
+
+      <div class="footer-section">
+        <strong id="footer-about-title">🌊 About</strong>
+        <p id="footer-about-copy">
+          Most mortgage calculators handle a single loan. This calculator models multiple mortgages, applies overpayments to the highest rate first, and compares that with keeping each mortgage separate.
+        </p>
+      </div>
+
+      <div class="footer-section">
+        <strong id="footer-not-included-title">🚫 What’s not included</strong>
+        <ul>
+          <li id="footer-not-included-1">Early repayment charges</li>
+          <li id="footer-not-included-2">Overpayment limits</li>
+          <li id="footer-not-included-3">Tax considerations</li>
+          <li id="footer-not-included-4">Rate changes or refinancing</li>
+          <li id="footer-not-included-5">Lender-specific rules</li>
+          <li id="footer-not-included-6">Comparing this with investing the money elsewhere</li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <strong id="footer-disclaimer-title">⚠️ Results are estimates</strong>
+        <ul>
+          <li id="footer-disclaimer-1">For illustration only, not financial advice.</li>
+          <li id="footer-disclaimer-2">Nothing is stored. Calculations run in your browser.</li>
+          <li id="footer-disclaimer-3">Anonymous usage analytics are used to improve the tool.</li>
+        </ul>
+        <a
+          href="https://github.com/dmjfallon/multiple-mortgages/blob/main/README.md"
+          target="_blank"
+          rel="noopener noreferrer"
+          style="color:#ffffff; text-decoration:underline;"
+          id="footer-source-link"
+        >
+          View source code and documentation
+        </a>
+      </div>
+    </details>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
+  <script src="engine.js"></script>
+  <script src="chart.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

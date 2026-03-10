@@ -13,7 +13,7 @@
   Intended for development only.
 */
 
-const DEV_MODE = false;
+const DEV_MODE = true;
 
 
 /* =====================================================
@@ -522,6 +522,193 @@ return {
    Public API
 ===================================================== */
 
+function simulateBaselineMulti(mortgages, extras) {
+  const perMortgage = mortgages.map((m, i) => simulateSingle(m, extras[i] || 0));
+  const maxLen = Math.max(...perMortgage.map((m) => m.balances.length));
+  const balances = [];
+
+  for (let i = 0; i < maxLen; i++) {
+    let total = 0;
+    for (const loan of perMortgage) total += loan.balances[i] || 0;
+    balances.push(roundMoney(total));
+  }
+
+  return {
+    months: Math.max(...perMortgage.map((m) => m.months)),
+    interest: roundMoney(perMortgage.reduce((t, m) => t + m.interest, 0)),
+    balances,
+    perMortgage,
+    m1: perMortgage[0],
+    m2: perMortgage[1],
+    m3: perMortgage[2]
+  };
+}
+
+function chooseTargetIndex(strategy, balances, rates) {
+  const active = balances
+    .map((balance, idx) => ({ idx, balance, rate: rates[idx] }))
+    .filter((m) => m.balance > 0);
+
+  if (active.length === 0) return -1;
+
+  if (strategy === "snowball") {
+    active.sort((a, b) => (a.balance - b.balance) || (a.idx - b.idx));
+    return active[0].idx;
+  }
+
+  active.sort((a, b) => (b.rate - a.rate) || (a.idx - b.idx));
+  return active[0].idx;
+}
+
+function simulateCascadeMulti(
+  mortgages,
+  extras,
+  redirectScheduled = true,
+  redirectExtra = true,
+  strategy = "avalanche"
+) {
+  const n = mortgages.length;
+  const balances = mortgages.map((m) => m.balance);
+  const rates = mortgages.map((m) => m.rate / 100 / 12);
+  const scheduled = mortgages.map((m) => computeScheduledPayment(m));
+
+  let months = 0;
+  let interestTotal = 0;
+
+  const totalBalances = [roundMoney(balances.reduce((a, b) => a + b, 0))];
+  const perMortgageBalances = balances.map((b) => [roundMoney(b)]);
+
+  const sourceToTargetTotals = Array.from({ length: n }, () => Array(n).fill(0));
+  const yearly = [];
+  let yearInterest = 0;
+  let yearFrom = Array(n).fill(0);
+  let yearTo = Array(n).fill(0);
+
+  const MAX_MONTHS = 1000 * 12;
+
+  while (months < MAX_MONTHS) {
+    if (balances.every((b) => b <= 0)) break;
+    months++;
+
+    for (let i = 0; i < n; i++) {
+      if (balances[i] <= 0) continue;
+
+      const interest = roundMoney(balances[i] * rates[i]);
+      interestTotal = roundMoney(interestTotal + interest);
+      yearInterest = roundMoney(yearInterest + interest);
+
+      let principal = roundMoney(scheduled[i] - interest);
+      principal = Math.max(0, Math.min(principal, balances[i]));
+      balances[i] = roundMoney(balances[i] - principal);
+    }
+
+    const activeCount = balances.filter((b) => b > 0).length;
+    const from = Array(n).fill(0);
+
+    for (let i = 0; i < n; i++) {
+      if (balances[i] > 0) {
+        from[i] = roundMoney((extras[i] || 0));
+        continue;
+      }
+      if (activeCount === 0) continue;
+      if (redirectExtra) from[i] = roundMoney(from[i] + (extras[i] || 0));
+      if (redirectScheduled) from[i] = roundMoney(from[i] + scheduled[i]);
+    }
+
+    const totalSource = roundMoney(from.reduce((a, b) => a + b, 0));
+    const usedToTarget = Array(n).fill(0);
+    let remaining = totalSource;
+
+    while (remaining > 0.0001) {
+      const targetIdx = chooseTargetIndex(strategy, balances, mortgages.map((m) => m.rate));
+      if (targetIdx === -1) break;
+      const used = Math.min(remaining, balances[targetIdx]);
+      if (used <= 0) break;
+
+      balances[targetIdx] = roundMoney(balances[targetIdx] - used);
+      usedToTarget[targetIdx] = roundMoney(usedToTarget[targetIdx] + used);
+      remaining = roundMoney(remaining - used);
+    }
+
+    const totalUsed = roundMoney(usedToTarget.reduce((a, b) => a + b, 0));
+    if (totalUsed > 0 && totalSource > 0) {
+      for (let s = 0; s < n; s++) {
+        const sourceUsed = roundMoney((from[s] / totalSource) * totalUsed);
+        yearFrom[s] = roundMoney(yearFrom[s] + sourceUsed);
+      }
+
+      for (let s = 0; s < n; s++) {
+        for (let t = 0; t < n; t++) {
+          if (usedToTarget[t] <= 0) continue;
+          const amount = roundMoney((from[s] / totalSource) * usedToTarget[t]);
+          sourceToTargetTotals[s][t] = roundMoney(sourceToTargetTotals[s][t] + amount);
+        }
+      }
+    }
+
+    for (let t = 0; t < n; t++) {
+      yearTo[t] = roundMoney(yearTo[t] + usedToTarget[t]);
+    }
+
+    for (let i = 0; i < n; i++) {
+      if (balances[i] < 0.01) balances[i] = 0;
+      perMortgageBalances[i].push(roundMoney(balances[i]));
+    }
+    totalBalances.push(roundMoney(balances.reduce((a, b) => a + b, 0)));
+
+    if (months % 12 === 0 || balances.every((b) => b <= 0)) {
+      const row = {
+        year: Math.ceil(months / 12),
+        interest: roundMoney(yearInterest),
+        fromByMortgage: [...yearFrom],
+        extraToByMortgage: [...yearTo],
+        endBalances: balances.map((b) => roundMoney(b)),
+        fromM1: roundMoney(yearFrom[0] || 0),
+        fromM2: roundMoney(yearFrom[1] || 0),
+        fromM3: roundMoney(yearFrom[2] || 0),
+        extraToM1: roundMoney(yearTo[0] || 0),
+        extraToM2: roundMoney(yearTo[1] || 0),
+        extraToM3: roundMoney(yearTo[2] || 0),
+        endBalanceM1: roundMoney(balances[0] || 0),
+        endBalanceM2: roundMoney(balances[1] || 0),
+        endBalanceM3: roundMoney(balances[2] || 0)
+      };
+
+      yearly.push(row);
+      yearInterest = 0;
+      yearFrom = Array(n).fill(0);
+      yearTo = Array(n).fill(0);
+    }
+  }
+
+  if (months === MAX_MONTHS) {
+    throw new Error("Cascade exceeded safety cap.");
+  }
+
+  return {
+    months,
+    interest: roundMoney(interestTotal),
+    balances: totalBalances,
+    yearly,
+    perMortgageBalances,
+    m1Balances: perMortgageBalances[0] || [0],
+    m2Balances: perMortgageBalances[1] || [0],
+    m3Balances: perMortgageBalances[2] || [0],
+    attribution: {
+      matrix: sourceToTargetTotals.map((row) => row.map((v) => roundMoney(v))),
+      m1ExtraPaidToM1: roundMoney(sourceToTargetTotals[0]?.[0] || 0),
+      m1ExtraPaidToM2: roundMoney(sourceToTargetTotals[0]?.[1] || 0),
+      m1ExtraPaidToM3: roundMoney(sourceToTargetTotals[0]?.[2] || 0),
+      m2ExtraPaidToM1: roundMoney(sourceToTargetTotals[1]?.[0] || 0),
+      m2ExtraPaidToM2: roundMoney(sourceToTargetTotals[1]?.[1] || 0),
+      m2ExtraPaidToM3: roundMoney(sourceToTargetTotals[1]?.[2] || 0),
+      m3ExtraPaidToM1: roundMoney(sourceToTargetTotals[2]?.[0] || 0),
+      m3ExtraPaidToM2: roundMoney(sourceToTargetTotals[2]?.[1] || 0),
+      m3ExtraPaidToM3: roundMoney(sourceToTargetTotals[2]?.[2] || 0)
+    }
+  };
+}
+
 function calculateCascade(
   m1,
   m2,
@@ -529,22 +716,22 @@ function calculateCascade(
   extra2,
   redirectScheduled = true,
   redirectExtra = true,
-  strategy = "avalanche"
+  strategy = "avalanche",
+  m3 = null,
+  extra3 = 0
 ) {
+  const mortgages = [normaliseMortgage(m1), normaliseMortgage(m2)];
+  const extras = [normaliseExtra(extra1), normaliseExtra(extra2)];
+  const hasM3 = !!m3;
+  if (hasM3) {
+    mortgages.push(normaliseMortgage(m3));
+    extras.push(normaliseExtra(extra3));
+  }
 
-  m1 = normaliseMortgage(m1);
-  m2 = normaliseMortgage(m2);
-
-  extra1 = normaliseExtra(extra1);
-  extra2 = normaliseExtra(extra2);
-
-  const baseline = simulateBaseline(m1, m2, extra1, extra2);
-
-  const cascade = simulateCascade(
-    m1,
-    m2,
-    extra1,
-    extra2,
+  const baseline = simulateBaselineMulti(mortgages, extras);
+  const cascade = simulateCascadeMulti(
+    mortgages,
+    extras,
     redirectScheduled,
     redirectExtra,
     strategy
@@ -561,8 +748,9 @@ function calculateCascade(
   const interestSaved =
     Math.abs(rawInterestSaved) < 0.5 ? 0 : Math.max(0, rawInterestSaved);
 
-  const scheduled1 = computeScheduledPayment(m1);
-  const scheduled2 = computeScheduledPayment(m2);
+  const scheduled1 = computeScheduledPayment(mortgages[0]);
+  const scheduled2 = computeScheduledPayment(mortgages[1]);
+  const scheduled3 = mortgages[2] ? computeScheduledPayment(mortgages[2]) : 0;
 
   return {
     baseline,
@@ -570,7 +758,9 @@ function calculateCascade(
     monthsSaved,
     interestSaved,
     scheduled1,
-    scheduled2
+    scheduled2,
+    scheduled3,
+    hasM3
   };
 }
 

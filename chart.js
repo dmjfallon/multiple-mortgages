@@ -25,6 +25,12 @@ function renderBalanceChart(result) {
 
   const m1Name = result.m1Name || "Mortgage 1";
   const m2Name = result.m2Name || "Mortgage 2";
+  const m3Name = result.m3Name || "Mortgage 3";
+  const hasM3 = !!result.hasM3;
+  const separateLabel = result.separateLabel || "Separate";
+  const strategyLabel = result.strategyLabel || "Highest Interest First";
+  const totalSeparateLabel = result.totalSeparateLabel || "Total – Separate";
+  const totalStrategyLabel = result.totalStrategyLabel || "Total – Highest Interest First";
 
   if (window.balanceChartInstance) {
     window.balanceChartInstance.destroy();
@@ -39,6 +45,15 @@ function renderBalanceChart(result) {
     }));
   }
 
+  const currency = window.__multipleMortgagesCurrency || "GBP";
+  const shortCurrency = new Intl.NumberFormat(undefined, {
+    style: "currency",
+    currency,
+    currencyDisplay: "narrowSymbol",
+    notation: "compact",
+    maximumFractionDigits: 1
+  });
+
   const baselineTotal = toXY(result.baselineTotal);
   const cascadeTotal  = toXY(result.cascadeTotal);
 
@@ -49,14 +64,9 @@ function renderBalanceChart(result) {
     ) / 12
   );
 
-  window.balanceChartInstance = new Chart(ctx, {
-
-    type: "line",
-data: {
-  datasets: [
-
+  const datasets = [
     {
-      label: m1Name + " (Separate)",
+      label: `${m1Name} (${separateLabel})`,
       data: toXY(result.baselineM1),
       borderColor: "rgba(59,130,246,0.7)",
       borderDash: [4,4],
@@ -66,7 +76,7 @@ data: {
       hidden: true
     },
     {
-      label: m1Name + " (Cascade)",
+      label: `${m1Name} (${strategyLabel})`,
       data: toXY(result.cascadeM1),
       borderColor: "rgba(46,109,246,1)",
       borderWidth: 2,
@@ -75,7 +85,7 @@ data: {
       hidden: true
     },
     {
-      label: m2Name + " (Separate)",
+      label: `${m2Name} (${separateLabel})`,
       data: toXY(result.baselineM2),
       borderColor: "rgba(168,85,247,0.7)",
       borderDash: [4,4],
@@ -85,16 +95,43 @@ data: {
       hidden: true
     },
     {
-      label: m2Name + " (Cascade)",
+      label: `${m2Name} (${strategyLabel})`,
       data: toXY(result.cascadeM2),
       borderColor: "rgba(120,90,255,1)",
       borderWidth: 2,
       tension: 0.15,
       pointRadius: 0,
       hidden: true
-    },
+    }
+  ];
+
+  if (hasM3) {
+    datasets.push(
+      {
+        label: `${m3Name} (${separateLabel})`,
+        data: toXY(result.baselineM3 || [0]),
+        borderColor: "rgba(45,212,191,0.7)",
+        borderDash: [4, 4],
+        borderWidth: 2,
+        tension: 0.15,
+        pointRadius: 0,
+        hidden: true
+      },
+      {
+        label: `${m3Name} (${strategyLabel})`,
+        data: toXY(result.cascadeM3 || [0]),
+        borderColor: "rgba(20,184,166,1)",
+        borderWidth: 2,
+        tension: 0.15,
+        pointRadius: 0,
+        hidden: true
+      }
+    );
+  }
+
+  datasets.push(
     {
-      label: "Total – Separate",
+      label: totalSeparateLabel,
       data: baselineTotal,
       borderColor: "rgba(203,213,225,0.45)",
       borderDash: [6, 6],
@@ -103,15 +140,20 @@ data: {
       pointRadius: 0
     },
     {
-      label: "Total – Cascade",
+      label: totalStrategyLabel,
       data: cascadeTotal,
       borderColor: "rgba(255,255,255,0.85)",
       borderWidth: 1.9,
       tension: 0.2,
       pointRadius: 0
     }
+  );
 
-  ] 
+  window.balanceChartInstance = new Chart(ctx, {
+
+    type: "line",
+data: {
+  datasets
 
 },   
 
@@ -166,7 +208,7 @@ scales: {
     ticks: {
       color: "rgba(255,255,255,0.6)",
       callback: function(value) {
-        return "£" + (value / 1000) + "k";
+        return shortCurrency.format(value);
       }
     },
     grid: {
