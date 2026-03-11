@@ -23,8 +23,8 @@
 
 function renderBalanceChart(result) {
 
-  const m1Name = result.m1Name || "Mortgage 1";
-  const m2Name = result.m2Name || "Mortgage 2";
+  const m1Name = result.m1Name || "Hipoteca 1";
+  const m2Name = result.m2Name || "Hipoteca 2";
   const m3Name = result.m3Name || "Mortgage 3";
   const hasM3 = !!result.hasM3;
   const separateLabel = result.separateLabel || "Separate";

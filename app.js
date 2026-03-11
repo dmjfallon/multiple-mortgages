@@ -368,6 +368,24 @@ function getDefaultMortgageName(index) {
   return `${t("mortgage")} ${index}`;
 }
 
+function getDefaultMortgageNameForLanguage(index, language) {
+  const table = TRANSLATIONS[language] || TRANSLATIONS.en;
+  return `${table.mortgage || TRANSLATIONS.en.mortgage} ${index}`;
+}
+
+function syncDisplayedMortgageNames() {
+  [1, 2, 3].forEach((index) => {
+    const input = document.getElementById(`m${index}-name`);
+    if (!input) return;
+
+    const value = input.value.trim();
+    const defaultNames = LANGUAGES.map((language) => getDefaultMortgageNameForLanguage(index, language));
+    if (!value || defaultNames.includes(value)) {
+      input.value = getDefaultMortgageName(index);
+    }
+  });
+}
+
 function clearMortgage3Fields() {
   ["name", "balance", "rate", "years", "months", "extra"].forEach((suffix) => {
     const input = document.getElementById(`m3-${suffix}`);
@@ -496,6 +514,7 @@ function applyTranslations() {
   document.getElementById("m1-name").placeholder = getDefaultMortgageName(1);
   document.getElementById("m2-name").placeholder = getDefaultMortgageName(2);
   document.getElementById("m3-name").placeholder = getDefaultMortgageName(3);
+  syncDisplayedMortgageNames();
 
   document.title = t("metaTitle");
   document.querySelector('meta[name="description"]')?.setAttribute("content", t("metaDescription"));
