@@ -6,6 +6,13 @@ let currentLanguage = "en";
 let lastRenderPayload = null;
 
 const PRESETS = {
+  "lucas-olivia": {
+    m1: { balance: "180000", rate: "4.7", years: "17", months: "5", extra: "500", name: { en: "Lucas", es: "Lucas" } },
+    m2: { balance: "250000", rate: "5.1", years: "25", months: "0", extra: "100", name: { en: "Olivia", es: "Olivia" } },
+    m3: null,
+    rs: true,
+    re: true
+  },
   "different-rates": {
     m1: { balance: "250000", rate: "3.1", years: "13", months: "8", extra: "500", name: { en: "Lower rate", es: "Tipo más bajo" } },
     m2: { balance: "165000", rate: "5.9", years: "25", months: "0", extra: "0", name: { en: "Higher rate", es: "Tipo más alto" } },
@@ -14,8 +21,8 @@ const PRESETS = {
     re: true
   },
   "rollover-only": {
-    m1: { balance: "210000", rate: "4.9", years: "12", months: "0", extra: "0", name: { en: "Shorter term", es: "Plazo más corto" } },
-    m2: { balance: "198000", rate: "4.7", years: "25", months: "0", extra: "0", name: { en: "Longer term", es: "Plazo más largo" } },
+    m1: { balance: "210000", rate: "4.9", years: "12", months: "0", extra: "0", name: { en: "Shorter mortgage", es: "Hipoteca más corta" } },
+    m2: { balance: "198000", rate: "4.7", years: "25", months: "0", extra: "0", name: { en: "Longer mortgage", es: "Hipoteca más larga" } },
     m3: null,
     rs: true,
     re: true
@@ -87,13 +94,13 @@ const TRANSLATIONS = {
     mortgageFreeDate: "📅 Mortgage-free date",
     totalInterestPaid: "💸 Total interest paid",
     interestSavedVsSeparate: "💰 Interest saved vs separate",
-    highestInterestFirst: "🌊 Highest interest first",
+    highestInterestFirst: "🌊 Highest-rate mortgage first",
     keepSeparate: "🏠 Keep mortgages separate",
     noOverpayments: "⛔ No overpayments (standard payment only)",
     balanceOverTime: "Balance over time",
     balanceSubtitle: "Highest interest first vs keeping mortgages separate",
     totalSeparate: "Total – Separate",
-    totalHighestInterest: "Total – Highest Interest First",
+    totalHighestInterest: "Total – Highest-rate first",
     effectiveRateTitle: "Rate saved on extra payments",
     effectiveRateCopy: "Think of this as the average mortgage rate your extra payments were reducing.",
     extraPaidInTitle: "Extra payments used",
@@ -179,13 +186,13 @@ const TRANSLATIONS = {
     mortgageFreeDate: "📅 Fecha sin hipoteca",
     totalInterestPaid: "💸 Interés total pagado",
     interestSavedVsSeparate: "💰 Interés ahorrado vs separado",
-    highestInterestFirst: "🌊 Primero el tipo más alto",
+    highestInterestFirst: "🌊 Primero la hipoteca con el tipo más alto",
     keepSeparate: "🏠 Mantener hipotecas separadas",
     noOverpayments: "⛔ Sin sobrepagos (solo pago estándar)",
     balanceOverTime: "Saldo con el tiempo",
     balanceSubtitle: "Primero el tipo más alto vs mantener hipotecas separadas",
     totalSeparate: "Total – Separado",
-    totalHighestInterest: "Total – Tipo más alto primero",
+    totalHighestInterest: "Total – Hipoteca con tipo más alto primero",
     effectiveRateTitle: "Tipo ahorrado con los pagos extra",
     effectiveRateCopy: "Piensa en esto como el tipo medio de hipoteca que tus pagos extra fueron reduciendo.",
     extraPaidInTitle: "Pagos extra usados",
@@ -261,6 +268,7 @@ function setLanguage(language, options = {}) {
   document.getElementById("lang-es-btn")?.classList.toggle("active", currentLanguage === "es");
 
   applyTranslations();
+  syncPresetMortgageNames();
 
   if (syncUrl) syncLanguageInUrl();
   if (rerender) rerenderIfNeeded();
@@ -382,6 +390,31 @@ function syncDisplayedMortgageNames() {
     const defaultNames = LANGUAGES.map((language) => getDefaultMortgageNameForLanguage(index, language));
     if (!value || defaultNames.includes(value)) {
       input.value = getDefaultMortgageName(index);
+    }
+  });
+}
+
+function getPresetKeyFromUrl() {
+  return new URLSearchParams(window.location.search).get("preset");
+}
+
+function getPresetNameVariants(data, fallbackIndex) {
+  const variants = new Set(LANGUAGES.map((language) => data?.name?.[language] || getDefaultMortgageNameForLanguage(fallbackIndex, language)));
+  variants.add(getDefaultMortgageName(fallbackIndex));
+  return variants;
+}
+
+function syncPresetMortgageNames() {
+  const preset = PRESETS[getPresetKeyFromUrl()];
+  if (!preset) return;
+
+  [preset.m1, preset.m2, preset.m3].forEach((data, index) => {
+    const input = document.getElementById(`m${index + 1}-name`);
+    if (!input || !data) return;
+
+    const currentValue = input.value.trim();
+    if (!currentValue || getPresetNameVariants(data, index + 1).has(currentValue)) {
+      input.value = data.name?.[currentLanguage] || getDefaultMortgageName(index + 1);
     }
   });
 }
