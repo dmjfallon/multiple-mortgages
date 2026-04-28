@@ -26,11 +26,11 @@
     <div class="hero-shell">
       <p class="eyebrow" data-lang="en">Guide</p>
       <p class="eyebrow hidden" data-lang="es">Guía</p>
-      <h1 class="hero-title" data-lang="en">How to think about paying off multiple mortgages</h1>
-      <h1 class="hero-title hidden" data-lang="es">Cómo pensar el pago de varias hipotecas</h1>
+      <h1 class="hero-title" data-lang="en">Paying off multiple mortgages</h1>
+      <h1 class="hero-title hidden" data-lang="es">Pagar varias hipotecas</h1>
       <div class="hero-explainer">
-        <p data-lang="en">A short guide to overpayments, redirected payments and a few example scenarios.</p>
-        <p class="hidden" data-lang="es">Una guía corta sobre sobrepagos, pagos redirigidos y algunos escenarios de ejemplo.</p>
+        <p data-lang="en">How overpayments, redirected payments and example scenarios work.</p>
+        <p class="hidden" data-lang="es">Cómo funcionan los sobrepagos, los pagos redirigidos y algunos escenarios de ejemplo.</p>
       </div>
     </div>
   </header>
@@ -38,58 +38,65 @@
   <main class="article-section">
     <article class="article-card">
       <div class="article-content" data-lang="en">
-        <section>
-          <h3>What this calculator does</h3>
+        <details class="guide-panel" open>
+          <summary>What this calculator does</summary>
+          <div class="guide-panel-body">
           <p>This calculator compares two simple approaches:</p>
-          <p>Keep each mortgage separate</p>
-          <p>Send extra money to the highest-interest mortgage first</p>
-          <p>When one mortgage finishes, its monthly payment can roll over to the remaining mortgage, accelerating the payoff.</p>
+          <p>1. Keep each mortgage (and any extra payments) separate</p>
+          <p>2. Pool any extra payments and send them to the highest-rate mortgage first</p>
+          <p>When one mortgage finishes, its monthly payment can be redirected to the remaining mortgage.</p>
+          <p>Sending additional payments to the highest-rate mortgage first saves the most interest.</p>
           <p>The graph and year-by-year table show exactly how this plays out over time.</p>
-        </section>
-        <section>
-          <h3>A simple real-life example</h3>
+          </div>
+        </details>
+        <details class="guide-panel">
+          <summary>A simple real-life example</summary>
+          <div class="guide-panel-body">
           <p>🏢 Lucas and Olivia each own a flat</p>
-          <p>💍 When they move in together, they now have two mortgages but only one home to pay for.</p>
-          <p>They could sell the second flat. If they do, there is no need for a multiple mortgage calculator.</p>
-          <p>But if they keep the second property and rent it out, their finances change. Two incomes to support one household, plus rent from the other property. That can create spare cash for mortgage overpayments.</p>
-          <p>At that point they have a choice:</p>
-          <p>• Keep both mortgages separate</p>
-          <p>• Treat the debts as one plan and send extra money where it saves the most interest</p>
+          <p>💍 When they move in together, they end up with two mortgages but only one home to live in.</p>
+          <p>They could sell one flat. If they do, they do not need a multiple mortgage calculator.</p>
+          <p>But if they keep the second flat and rent it out, they will likely have more money available each month:</p>
+          <p>• two incomes</p>
+          <p>• additional rental income</p>
+          <p>• only one home to live in (lower outgoings)</p>
+          <p>That extra cash could be used to overpay their mortgages.</p>
+          <p>At that point, they can either:</p>
+          <p>• keep the mortgages separate</p>
+          <p>• treat them as one plan and send extra money where it saves the most interest</p>
           <p>This calculator helps compare those options.</p>
           <p><a href="index.html?preset=lucas-olivia">Open Lucas and Olivia’s example</a> to see how this looks in the calculator, graph and table.</p>
-        </section>
-        <section>
-          <h3>Why “highest-rate mortgage first” is the default benchmark</h3>
-          <p>Extra payments reduce more interest when they go toward the highest interest rate.</p>
-          <p>For example:</p>
-          <p>Mortgage A: <span data-money="250000">£250,000</span> at 3.1%, 13 years 8 months remaining, <span data-money="500">£500</span> monthly overpayment</p>
-          <p>Mortgage B: <span data-money="165000">£165,000</span> at 5.9%, 25 years remaining, no overpayment</p>
-          <p>If the <span data-money="500">£500</span> goes to the 5.9% mortgage first, the combined debt finishes about 11 years 11 months earlier and saves roughly <span data-money="67400">£67,400</span> in interest compared with keeping the mortgages separate.</p>
-          <p><a href="index.html?preset=different-rates">Open the different-rates example</a> to see this in the graph and table.</p>
-        </section>
-        <section>
-          <h3>A rollover example</h3>
-          <p>Sometimes there are no overpayments at all because budgets are tight.</p>
-          <p>Even then, combining the strategy can help.</p>
-          <p>When one mortgage finishes, its normal monthly payment rolls over to the other mortgage.</p>
-          <p>In the example scenario, that rollover alone saves about 9 years and <span data-money="31600">£31,600</span> compared with treating the mortgages completely separately.</p>
-          <p><a href="index.html?preset=rollover-only">Open the rollover example</a> to see this in the graph and table. The table is where the rollover becomes most obvious to a human reader.</p>
-        </section>
-        <section>
-          <h3>What counts as “extra payments”</h3>
+          </div>
+        </details>
+        <details class="guide-panel">
+          <summary>A rollover example</summary>
+          <div class="guide-panel-body">
+          <p>Sometimes there are no overpayments because budgets are tight.</p>
+          <p>Even then, combining the mortgage payments can help.</p>
+          <p>When one mortgage finishes, its monthly payment can roll over to the other.</p>
+          <p>In this example, that alone saves about 9 years and <span data-money="31600">£31,600</span> compared with treating the mortgages separately.</p>
+          <p><a href="index.html?preset=rollover-only">Open the rollover example</a> to see this in the graph and table. The rollover shows up most clearly in the table.</p>
+          </div>
+        </details>
+        <details class="guide-panel">
+          <summary>What counts as “extra payments”</summary>
+          <div class="guide-panel-body">
           <p>In this calculator, extra payments include:</p>
           <p>Monthly overpayments you enter</p>
           <p>Payments redirected after one mortgage finishes</p>
           <p>The normal monthly payment from the finished mortgage (if rollover is enabled)</p>
-        </section>
-        <section>
-          <h3>What the effective rate means</h3>
+          </div>
+        </details>
+        <details class="guide-panel">
+          <summary>What the effective rate means</summary>
+          <div class="guide-panel-body">
           <p>The effective rate shows the return your extra payments achieved.</p>
           <p>For example, if the effective rate is 5.9%, your overpayments saved interest roughly equivalent to earning 5.9% on that money.</p>
           <p>If you can reliably earn more than that elsewhere, for example through investments, you might prefer to do that instead.</p>
-        </section>
-        <section>
-          <h3>What this tool does not cover</h3>
+          </div>
+        </details>
+        <details class="guide-panel">
+          <summary>What this tool does not cover</summary>
+          <div class="guide-panel-body">
           <p>This calculator does not include:</p>
           <p>Lender overpayment limits or fees</p>
           <p>Taxes</p>
@@ -99,62 +106,70 @@
           <p>It also does not settle the classic “overpay the mortgage vs invest instead” debate. That depends on risk tolerance, taxes, and personal goals.</p>
           <p>This tool has a narrower purpose: to model multiple mortgages properly, which is difficult with calculators designed for a single loan.</p>
           <p>Planning model only. For illustration, not financial advice.</p>
-        </section>
+          </div>
+        </details>
       </div>
 
       <div class="article-content hidden" data-lang="es">
-        <section>
-          <h3>Lo que hace esta calculadora</h3>
+        <details class="guide-panel" open>
+          <summary>Lo que hace esta calculadora</summary>
+          <div class="guide-panel-body">
           <p>Esta calculadora compara dos enfoques sencillos:</p>
-          <p>Mantener cada hipoteca por separado</p>
-          <p>Enviar el dinero extra primero a la hipoteca con el tipo de interés más alto</p>
-          <p>Cuando una hipoteca termina, su cuota mensual puede pasar a la hipoteca restante, acelerando la amortización.</p>
+          <p>1. Mantener cada hipoteca (y cualquier pago extra) por separado</p>
+          <p>2. Juntar cualquier pago extra y enviarlo primero a la hipoteca con el tipo más alto</p>
+          <p>Cuando una hipoteca termina, su cuota mensual puede redirigirse a la hipoteca restante.</p>
+          <p>Enviar pagos adicionales primero a la hipoteca con el tipo más alto ahorra más intereses.</p>
           <p>El gráfico y la tabla año a año muestran exactamente cómo evoluciona esto con el tiempo.</p>
-        </section>
-        <section>
-          <h3>Un ejemplo sencillo de la vida real</h3>
+          </div>
+        </details>
+        <details class="guide-panel">
+          <summary>Un ejemplo sencillo de la vida real</summary>
+          <div class="guide-panel-body">
           <p>🏢 Lucas y Olivia tienen cada uno un piso</p>
-          <p>💍 Cuando se van a vivir juntos, ahora tienen dos hipotecas pero solo una vivienda en la que pagar los gastos de vida.</p>
-          <p>Pueden vender el segundo piso. Si lo hacen, ya no hace falta una calculadora para varias hipotecas.</p>
-          <p>Pero si conservan la segunda propiedad y la alquilan, sus finanzas cambian. Dos ingresos para sostener un solo hogar, más el alquiler de la otra propiedad. Eso puede generar dinero sobrante para hacer sobrepagos de hipoteca.</p>
-          <p>En ese punto tienen una decisión:</p>
-          <p>• Mantener las dos hipotecas por separado</p>
-          <p>• Tratar las deudas como un solo plan y enviar el dinero extra donde más intereses ahorra</p>
+          <p>💍 Cuando se van a vivir juntos, terminan con dos hipotecas pero solo una vivienda en la que vivir.</p>
+          <p>Pueden vender uno de los pisos. Si lo hacen, no necesitan una calculadora para varias hipotecas.</p>
+          <p>Pero si conservan el segundo piso y lo alquilan, probablemente tendrán más dinero disponible cada mes:</p>
+          <p>• dos ingresos</p>
+          <p>• ingresos adicionales por alquiler</p>
+          <p>• solo una vivienda en la que vivir (menores gastos)</p>
+          <p>Ese dinero extra puede usarse para hacer sobrepagos en sus hipotecas.</p>
+          <p>En ese punto, pueden:</p>
+          <p>• mantener las hipotecas por separado</p>
+          <p>• tratarlas como un solo plan y enviar el dinero extra donde más intereses ahorra</p>
           <p>Esta calculadora ayuda a comparar esas opciones.</p>
           <p><a href="index.html?lang=es&preset=lucas-olivia">Abrir el ejemplo de Lucas y Olivia</a> para ver cómo se refleja en la calculadora, el gráfico y la tabla.</p>
-        </section>
-        <section>
-          <h3>Por qué “primero la hipoteca con el tipo más alto” es la referencia por defecto</h3>
-          <p>Los pagos extra reducen más intereses cuando se destinan al tipo de interés más alto.</p>
-          <p>Por ejemplo:</p>
-          <p>Hipoteca A: <span data-money="250000">£250,000</span> al 3,1%, con 13 años y 8 meses restantes, y un sobrepago mensual de <span data-money="500">£500</span></p>
-          <p>Hipoteca B: <span data-money="165000">£165,000</span> al 5,9%, con 25 años restantes, sin sobrepago</p>
-          <p>Si esos <span data-money="500">£500</span> se destinan primero a la hipoteca al 5,9%, la deuda combinada termina unos 11 años y 11 meses antes y ahorra aproximadamente <span data-money="67400">£67,400</span> en intereses en comparación con mantener las hipotecas separadas.</p>
-          <p><a href="index.html?lang=es&preset=different-rates">Abrir el ejemplo de tipos distintos</a> para verlo en el gráfico y en la tabla.</p>
-        </section>
-        <section>
-          <h3>Un ejemplo de redirección</h3>
+          </div>
+        </details>
+        <details class="guide-panel">
+          <summary>Un ejemplo de redirección</summary>
+          <div class="guide-panel-body">
           <p>A veces no hay sobrepagos porque el presupuesto está ajustado.</p>
-          <p>Aun así, combinar la estrategia puede ayudar.</p>
-          <p>Cuando una hipoteca termina, su cuota mensual normal pasa a la otra hipoteca.</p>
-          <p>En el escenario de ejemplo, solo esa redirección ahorra alrededor de 9 años y <span data-money="31600">£31,600</span> frente a tratar ambas hipotecas completamente por separado.</p>
-          <p><a href="index.html?lang=es&preset=rollover-only">Abrir el ejemplo de redirección</a> para verlo en el gráfico y en la tabla. La tabla es donde la redirección se vuelve más evidente para una persona que la está leyendo.</p>
-        </section>
-        <section>
-          <h3>Qué cuenta como “pagos extra”</h3>
+          <p>Aun así, combinar los pagos de las hipotecas puede ayudar.</p>
+          <p>Cuando una hipoteca termina, su cuota mensual puede pasar a la otra.</p>
+          <p>En este ejemplo, solo eso ahorra alrededor de 9 años y <span data-money="31600">£31,600</span> frente a tratar las hipotecas por separado.</p>
+          <p><a href="index.html?lang=es&preset=rollover-only">Abrir el ejemplo de redirección</a> para verlo en el gráfico y en la tabla. La redirección se ve con más claridad en la tabla.</p>
+          </div>
+        </details>
+        <details class="guide-panel">
+          <summary>Qué cuenta como “pagos extra”</summary>
+          <div class="guide-panel-body">
           <p>En esta calculadora, los pagos extra incluyen:</p>
           <p>Sobrepagos mensuales que introduces</p>
           <p>Pagos redirigidos después de que una hipoteca termina</p>
           <p>La cuota mensual normal de la hipoteca terminada (si la redirección está activada)</p>
-        </section>
-        <section>
-          <h3>Qué significa el tipo efectivo</h3>
+          </div>
+        </details>
+        <details class="guide-panel">
+          <summary>Qué significa el tipo efectivo</summary>
+          <div class="guide-panel-body">
           <p>El tipo efectivo muestra el rendimiento que consiguieron tus pagos extra.</p>
           <p>Por ejemplo, si el tipo efectivo es 5,9%, tus sobrepagos ahorraron intereses de forma aproximada como si hubieras obtenido un 5,9% sobre ese dinero.</p>
           <p>Si puedes conseguir de forma fiable una rentabilidad mayor en otro sitio, por ejemplo con inversiones, quizá prefieras hacer eso.</p>
-        </section>
-        <section>
-          <h3>Lo que esta herramienta no cubre</h3>
+          </div>
+        </details>
+        <details class="guide-panel">
+          <summary>Lo que esta herramienta no cubre</summary>
+          <div class="guide-panel-body">
           <p>Esta calculadora no incluye:</p>
           <p>Límites o comisiones por sobrepago del banco</p>
           <p>Impuestos</p>
@@ -164,7 +179,8 @@
           <p>Tampoco resuelve el debate clásico entre amortizar hipoteca o invertir el dinero en otro sitio. Eso depende de la tolerancia al riesgo, los impuestos y los objetivos personales.</p>
           <p>Esta herramienta tiene un objetivo más concreto: modelar correctamente varias hipotecas, algo difícil de hacer con calculadoras diseñadas para un solo préstamo.</p>
           <p>Solo es un modelo de planificación. Con fines ilustrativos, no es asesoramiento financiero.</p>
-        </section>
+          </div>
+        </details>
       </div>
     </article>
   </main>

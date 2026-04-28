@@ -951,10 +951,10 @@ function buildYearlyTable(result, mortgageNames) {
     rows += `
       <tr>
         <td>${year.year}</td>
+        ${balanceCells}
         <td>${formatMoney(Math.round(year.interest))}</td>
         ${fromCells}
         ${toCells}
-        ${balanceCells}
       </tr>
     `;
   });
@@ -983,20 +983,20 @@ function buildYearlyTable(result, mortgageNames) {
           <thead>
             <tr>
               <th>${t("year")}</th>
+              ${balanceHeaders}
               <th>${t("totalInterest")}</th>
               ${fromHeaders}
               ${toHeaders}
-              ${balanceHeaders}
             </tr>
           </thead>
           <tbody>${rows}</tbody>
           <tfoot>
             <tr style="font-weight:600; border-top:2px solid rgba(255,255,255,0.18);">
               <td>${t("total")}</td>
+              ${dashCells}
               <td>${formatMoney(Math.round(totalInterest))}</td>
               ${totalFromCells}
               ${totalToCells}
-              ${dashCells}
             </tr>
           </tfoot>
         </table>

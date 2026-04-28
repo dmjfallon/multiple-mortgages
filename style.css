@@ -676,16 +676,6 @@ button:disabled {
   color: var(--soft);
 }
 
-.article-content section {
-  display: grid;
-  gap: 12px;
-}
-
-.article-content h3 {
-  margin-bottom: 8px;
-  color: white;
-}
-
 .article-content p,
 .article-content ul {
   margin: 0;
@@ -694,6 +684,47 @@ button:disabled {
 .article-content a {
   color: #8ce2dd;
   text-decoration: underline;
+}
+
+.guide-panel {
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  overflow: hidden;
+}
+
+.guide-panel summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 18px 22px;
+  color: white;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.guide-panel summary::-webkit-details-marker {
+  display: none;
+}
+
+.guide-panel summary::after {
+  content: "+";
+  color: var(--accent-2);
+  font-size: 22px;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+
+.guide-panel[open] summary::after {
+  content: "−";
+}
+
+.guide-panel-body {
+  display: grid;
+  gap: 12px;
+  padding: 0 22px 20px;
 }
 
 .article-content ul {
