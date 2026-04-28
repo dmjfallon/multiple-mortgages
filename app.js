@@ -7,8 +7,8 @@ let lastRenderPayload = null;
 
 const PRESETS = {
   "lucas-olivia": {
-    m1: { balance: "180000", rate: "4.7", years: "17", months: "5", extra: "500", name: { en: "Lucas", es: "Lucas" } },
-    m2: { balance: "250000", rate: "5.1", years: "25", months: "0", extra: "100", name: { en: "Olivia", es: "Olivia" } },
+    m1: { balance: "180000", rate: "4.7", years: "17", months: "5", extra: "500", name: { en: "Olivia", es: "Olivia" } },
+    m2: { balance: "250000", rate: "5.1", years: "25", months: "0", extra: "100", name: { en: "Lucas", es: "Lucas" } },
     m3: null,
     rs: true,
     re: true
